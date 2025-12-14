@@ -8,6 +8,8 @@ The ESP32 publishes data to the Mosquitto Broker, which can then be subscribed t
 | **Mosquitto Broker** | Message Hub | Ubuntu PC |
 | **Client** | Subscriber (receives data) | Ubuntu Terminal |
 
+-----
+
 ## ⚙️ Requirements
 
 ### Hardware
@@ -17,12 +19,14 @@ The ESP32 publishes data to the Mosquitto Broker, which can then be subscribed t
 ### Software
 
   * MQTT Explorer
-
+-----
 ## 🚀 Setup Steps
 
-### Step 1: Install Mosquitto on Ubuntu
+> **There are 2 ways to achive the desired results 1st is via making your PC as broker or 2nd via using MQTT Explorer Application**
 
-Update your system packages and install the Mosquitto broker and client tools:
+### **Method 1: Using PC as Mosquitto Broker**
+
+This method requires your Ubuntu PC to host the MQTT Broker service.
 
 ```bash
 # Update system
@@ -147,6 +151,53 @@ You should see the message being received on ESP32 and the On-Board LED should t
 ```
 Message arrived [cdac/desd/led/control]: 1
 ```
+
+### **Using MQTT Explorer Application**
+
+### Step 1: Install MQTT Explorer
+Install the application via snap store or using belwo given command
+```bash
+sudo snap install mqtt-explorer
+```
+
+-----
+
+### **Method 2: Using MQTT Explorer Application**
+
+This method is recommended for easy monitoring, publishing, and debugging.
+
+### Step 1: Install MQTT Explorer
+
+Install the application via the Snap store using the command below:
+
+```bash
+sudo snap install mqtt-explorer
+```
+
+### Step 2: Configure & Connect
+
+1.  Open MQTT Explorer.
+2.  Click **"New Connection"**.
+3.  **Name:** `Ubuntu Broker` (or similar)
+4.  **Host:** Enter your Ubuntu PC's IP address (e.g., `192.168.1.10`).
+      * *Alternatively*, use a public broker like `broker.hivemq.com`.
+      * *Make sure the same broker is specified in esp32 code as well.*
+5.  **Port:** `1883`
+6.  Click **Advanced**.   
+    `In topic provide your topic paths (e.g cdac/desd/telemetery)`
+    * Enter unique clientID.
+8.  Click **"Connect"**.
+
+### Step 3: Monitor & Publish
+
+1.  After the ESP32 is running, you will see the `cdac/desd/telemetry` topic appear in the left pane of MQTT Explorer, along with the received JSON data.
+2.  To send a control command, select the **Publish** pane at the bottom.
+3.  Enter the topic: `cdac/desd/led/control`
+4.  Enter the payload: `1` (to turn the LED ON) or `0` (to turn it OFF).
+5.  Click **"Publish"**. The ESP32 should respond to the command.
+
+-----
+
 
 ## 🐛 Debug & Monitoring
 
