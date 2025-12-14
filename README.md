@@ -252,17 +252,16 @@ Open another terminal and publish to the topic the ESP32 is subscribing to:
 mosquitto_pub -h test.mosquitto.org -t "cdac/desd/led/control" -m 1
 ```
 
-You should see the message being received on ESP32:
+You should see the message being received on ESP32 and the On-Board LED should turn ON:
 ```
 Message arrived [cdac/desd/led/control]: 1
 ```
-and the On-Board LED should turn ON
 
 ## 🐛 Debug & Monitoring
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
-| **ESP32 not connecting** | Wrong broker IP | Use the Ubuntu PC's IP, not `localhost` |
+| **ESP32 not connecting** | Wrong broker IP | Use the Ubuntu Broker IP, not `localhost` |
 | **Connection refused** | Broker not listening | Check the Mosquitto configuration for `listener 1883` |
 | **No messages received** | Topic mismatch | Topics must match exactly (e.g., `esp32/data`) |
 | **Frequent disconnects** | Weak Wi-Fi | Improve the Wi-Fi signal or increase the connection delay |
@@ -274,32 +273,3 @@ View real-time Mosquitto service logs for deep debugging:
 ```bash
 journalctl -u mosquitto -f
 ```
-
-## 📈 Future Enhancements
-
-The project can be extended with the following features:
-
-  * MQTT Authentication (username/password)
-  * TLS Security (Port 8883)
-  * Configuring QoS Levels (0, 1, 2)
-  * Retained Messages
-  * ESP32 Subscriber Mode (for bi-directional communication)
-  * Using JSON Payloads for structured data
-  * Implementing FreeRTOS-based MQTT Tasks
-
------
-
-## 🎓 Learning Outcome
-
-By completing this project, you will achieve:
-
-  * Practical understanding of the MQTT protocol
-  * Hands-on broker configuration experience
-  * Knowledge of ESP32 $\text{Wi-Fi} + \text{TCP}$ communication
-  * A foundation in IoT system-level design
-
------
-
-I can also help you align this README with your ESP32 code, add more detailed diagrams, or convert this into portfolio-quality documentation, including a TLS + authentication section.
-
-Would you like me to add the TLS and authentication steps to this guide?
