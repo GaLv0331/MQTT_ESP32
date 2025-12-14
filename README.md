@@ -12,7 +12,7 @@ The ESP32 publishes data to the Mosquitto Broker, which can then be subscribed t
 
 ### Hardware
 
-  * Common Wi-Fi network for both ESP32 and PC
+  * Common Wi-Fi network for both ESP32 and PC `RECCOMMENDED: MOBILE HOTSPOT`
 
 ### Software
 
