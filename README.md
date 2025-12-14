@@ -182,7 +182,7 @@ sudo snap install mqtt-explorer
 8.  Click **"Connect"**.
 
 ### Step 3: Monitor & Publish
-
+![configFileChanges](images/mqttExplorerOutput.png)
 1.  After the ESP32 is running, you will see the `cdac/desd/telemetry` topic appear in the left pane of MQTT Explorer, along with the received JSON data.
 2.  To send a control command, select the **Publish** pane at the bottom.
 3.  Enter the topic: `cdac/desd/led/control`
