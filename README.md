@@ -38,7 +38,7 @@ sudo apt install mosquitto mosquitto-clients
 ```
 
 Verify the installation by checking the version:
-[systemctlCommand](images/mosquittoCommand.png)
+![systemctlCommand](images/systemctlCommand.png)
 ```bash
 sudo systemctl status mosquitto
 ```
@@ -62,7 +62,8 @@ sudo systemctl status mosquitto
 ```
 
 ### Step 3: Configure Mosquitto for Network Access
-[configFileChanges](images/confgiFile.png)
+![configFileChanges](images/confgiFile.png)
+
 Edit the configuration file to allow network connections:
 
 ```bash
@@ -83,7 +84,7 @@ sudo systemctl restart mosquitto
 ```
 
 ### Step 4: Test Broker Locally
-[configFileChanges](images/localTestMQTT.png)
+![configFileChanges](images/localTestMQTT.png)
 Open three separate terminal windows on your Ubuntu PC:
 
 1. **mosquitto MQTT Broker Terminal:** Check for verbose logs and flow of events
@@ -102,7 +103,7 @@ Open three separate terminal windows on your Ubuntu PC:
 If the message "Hello MQTT" appears in the subscriber terminal, the broker is working correctly.
 
 ### Step 5: Find Ubuntu PC IP Address
-[configFileChanges](images/ip_a_settings.png)
+![configFileChanges](images/ip_a_settings.png)
 Find the local IP address of your Ubuntu PC, which the ESP32 will use as the MQTT broker address:
 
 ```bash
@@ -127,7 +128,7 @@ Update Config.h file:
        const char *MQTT_CLIENT_ID = "nodeESP32";
 ```
 ### Step 7: Verify ESP32 → Ubuntu Communication
-
+![configFileChanges](images/mqtt_mosquitto.png)
 Compile and upload the code to your ESP32.
 
 On the Ubuntu PC, open a terminal and subscribe to the topic the ESP32 is publishing to:
@@ -151,15 +152,6 @@ You should see the message being received on ESP32 and the On-Board LED should t
 ```
 Message arrived [cdac/desd/led/control]: 1
 ```
-
-### **Using MQTT Explorer Application**
-
-### Step 1: Install MQTT Explorer
-Install the application via snap store or using belwo given command
-```bash
-sudo snap install mqtt-explorer
-```
-
 -----
 
 ### **Method 2: Using MQTT Explorer Application**
@@ -175,7 +167,8 @@ sudo snap install mqtt-explorer
 ```
 
 ### Step 2: Configure & Connect
-
+![configFileChanges](images/mqttExplorerSettings.png)
+![configFileChanges](images/mqttExplorerSetting_2.png)
 1.  Open MQTT Explorer.
 2.  Click **"New Connection"**.
 3.  **Name:** `Ubuntu Broker` (or similar)
