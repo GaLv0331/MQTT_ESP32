@@ -68,7 +68,7 @@ sudo nano /etc/mosquitto/mosquitto.conf
 Add the following lines to the file:
 
 ```conf
-listener 1883
+listener 1883 0.0.0.0
 allow_anonymous true
 ```
 
