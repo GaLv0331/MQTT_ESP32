@@ -110,8 +110,10 @@ ip a
 ### Step 6: ESP32 MQTT Publisher Code
 
 Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address (broker).
-
 Common Brokers: `"broker.hivemq.com";` `"test.mosquitto.org";`
+[main.ino](MQTT_ESP32/mqtt_esp32_basic.ino)
+[config.h](MQTT_ESP32/config.h)
+
 ```
 Update Config.h file:
        const char *ssid = "YOUR_WIFI_SSID";
