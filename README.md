@@ -97,6 +97,8 @@ Open three separate terminal windows on your Ubuntu PC:
 
 If the message "Hello MQTT" appears in the subscriber terminal, the broker is working correctly.
 
+
+
 ### Step 5: ESP32 MQTT Publisher Code
 
 Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address (broker).
