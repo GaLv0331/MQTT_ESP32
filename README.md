@@ -72,33 +72,25 @@ listener 1883
 allow_anonymous true
 ```
 
-> **Note:** Anonymous access is enabled here for learning/testing purposes only. For production, **MQTT Authentication** (username/password) is highly recommended.
-
 Restart the broker to apply the changes:
 
 ```bash
 sudo systemctl restart mosquitto
 ```
 
-### Step 4: Find Ubuntu PC IP Address
+### Step 4: Test Broker Locally
 
-Find the local IP address of your Ubuntu PC, which the ESP32 will use as the MQTT broker address:
+Open three separate terminal windows on your Ubuntu PC:
 
-```bash
-ip a
-```
-
-> **Example:** Look for the IP address under the `inet` field (e.g., `inet 192.168.1.10`). This IP will be used as the MQTT broker address in the ESP32 code.
-
-### Step 5: Test Broker Locally
-
-Open two separate terminal windows on your Ubuntu PC:
-
-1.  **Subscriber Terminal:** Listen for messages on `test/topic`:
+1. **mosquitto MQTT Broker Terminal:** Check for verbose logs and flow of events
     ```bash
-    mosquitto_sub -h localhost -t test/topic
+    mosquitto -v
     ```
-2.  **Publisher Terminal:** Send a test message:
+2.  **Subscriber Terminal:** Listen for messages on `cdac/desd/telemetry`:
+    ```bash
+    mosquitto_sub -h test.mosquitto.org -t cdac/desd/telemetry
+    ```
+3.  **Publisher Terminal:** Send a test message:
     ```bash
     mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
     ```
