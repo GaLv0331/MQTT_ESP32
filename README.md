@@ -86,86 +86,165 @@ Open three separate terminal windows on your Ubuntu PC:
     ```bash
     mosquitto -v
     ```
-2.  **Subscriber Terminal:** Listen for messages on `cdac/desd/telemetry`:
+2.  **Subscriber Terminal:** Listen for messages on `test/topic`:
     ```bash
-    mosquitto_sub -h test.mosquitto.org -t cdac/desd/telemetry
+    mosquitto_sub -h localhost(usually <127.0.0.1>) -t test/topic
     ```
 3.  **Publisher Terminal:** Send a test message:
     ```bash
-    mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
+    mosquitto_pub -h localhost(usually <127.0.0.1>) -t test/topic -m "Hello MQTT"
     ```
 
 If the message "Hello MQTT" appears in the subscriber terminal, the broker is working correctly.
 
-### Step 6: ESP32 MQTT Publisher Setup
+### Step 5: ESP32 MQTT Publisher Code
 
-Install the **`PubSubClient`** library via the Arduino Library Manager.
-The required libraries are `WiFi.h` and `PubSubClient.h`.
+Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address (broker).
 
-### Step 7: ESP32 MQTT Publisher Code
+Common Brokers: `"broker.hivemq.com";` `"test.mosquitto.org";`
 
-Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address:
-
+**Below Code is of config.h:**
 ```cpp
-#include <WiFi.h> 
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define LED_PIN   2
+
+const char *ssid = "YOUR_WIFI_SSID";
+const char *password = "YOUR_WIFI_PASSWORD";
+
+//const char *MQTT_BROKER = "broker.hivemq.com";
+const char *MQTT_BROKER = "test.mosquitto.org";
+const int MQTT_PORT = 1883;
+const char *MQTT_CLIENT_ID = "node_esp32";
+
+const char *MQTT_USERNAME = "desd";
+const char *MQTT_PASSWORD = "desd123";
+
+const char *MQTT_TOPIC_PUBLISH = "cdac/desd/telemetry";
+const char *MQTT_TOPIC_SUBSCRIBE = "cdac/desd/led/control";
+
+const uint8_t NEW_MAC_ADDRESS[] = {0xdc, 0x1b, 0xa1, 0x64, 0x5e, 0xbf};
+
+#endif
+```
+**Below Code is of main.ino:**
+```cpp
+#include <WiFi.h>
 #include <PubSubClient.h>
+#include <esp_wifi.h>
+#include <ArduinoJson.h>
+#include "config.h"
 
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
-const char* mqtt_server = "192.168.1.10"; // Ubuntu PC IP
-const int mqtt_port = 1883;
+DynamicJsonDocument sensorDataPayload(1024);
+char sensorDataFormatForMqttPublish[1024];
 
-WiFiClient espClient; 
-PubSubClient client(espClient); 
+WiFiClient MQTTclient;
+PubSubClient client(MQTTclient);
 
-void setup_wifi() {
-  WiFi.begin(ssid, password); 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  } 
-} 
+long lastReconnectAttempt = 0;
 
-void reconnect() { 
-  while (!client.connected()) { 
-    if (client.connect("ESP32_Publisher")) { // Connected 
-      // Add subscribe logic here if needed
-    } else { 
-      delay(2000); 
-    } 
-  } 
-} 
+boolean reconnect(){
+  //if(client.connect(MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)){
+  if(client.connect(MQTT_CLIENT_ID)){
+    Serial.println("Attempting to connect to broker");
+    client.subscribe(MQTT_TOPIC_SUBSCRIBE);
+  }
+  return client.connected();
+}
 
-void setup() { 
-  setup_wifi();
-  client.setServer(mqtt_server, mqtt_port);
-} 
+void handleIncomingMessage(char* topic, byte* payload, unsigned int length) {
+  String message;
+  for(unsigned int i=0; i<length; i++){
+    message += (char)payload[i];
+  }
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("]: ");
+  Serial.println(message);
 
-void loop() { 
+  if(String(topic) == MQTT_TOPIC_SUBSCRIBE){
+    if(message == "1"){
+      digitalWrite(LED_PIN, HIGH);
+    }
+    else if(message == "0"){
+      digitalWrite(LED_PIN, LOW);
+    }
+  }
+}
+
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Attempting to connect to WiFi....");
+  
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  if(WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.print("Couldn't connect to Wifi.");
+  }
+  Serial.print("ESP32 IP address: ");
+  Serial.println(WiFi.localIP());
+  String macAddress = WiFi.macAddress();
+  Serial.println("MAC Address: " + macAddress);
+
+  client.setServer(MQTT_BROKER, MQTT_PORT);
+  client.setCallback(handleIncomingMessage);
+
+  lastReconnectAttempt = 0;
+
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
   if (!client.connected()) {
-    reconnect(); 
-  } 
-  client.loop();
+    long now = millis();
+    if(now - lastReconnectAttempt > 5000){
+      lastReconnectAttempt = now;
+      if(reconnect()){
+        lastReconnectAttempt = 0;
+      }
+    }
+  }
+  else{
+    Serial.println("Connected to broker --- !!");
+    client.loop();
 
-  // Publish a message to the "esp32/data" topic every second
-  client.publish("esp32/data", "Hello from ESP32");
-  delay(1000); 
+    float humidity = random(0,100);
+    float temperature = random(-16,56);  
+
+    sensorDataPayload["Temperature"] = temperature;
+    sensorDataPayload["Humidity"] = humidity;
+
+    serializeJson(sensorDataPayload, sensorDataFormatForMqttPublish);
+
+    delay(2000);
+
+    Serial.println("Humidity: " + String(humidity));
+    Serial.println("Temperature: " + String(temperature));
+
+    client.publish(MQTT_TOPIC_PUBLISH, sensorDataFormatForMqttPublish);
+    Serial.println("Sensor data sent to broker");
+
+    delay(5000);
+  }
 }
 ```
 
-### Step 8: Verify ESP32 → Ubuntu Communication
+### Step 6: Verify ESP32 → Ubuntu Communication
 
 Compile and upload the code to your ESP32.
 
 On the Ubuntu PC, open a terminal and subscribe to the topic the ESP32 is publishing to:
 
 ```bash
-mosquitto_sub -h 192.168.1.10 -t esp32/data
+mosquitto_sub -h test.mosquitto.org -t cdac/desd/telemetry
 ```
 
 You should see the message being received:
 
 ```
-Hello from ESP32
+{"Temperature":45,"Humidity":82}
 ```
 
 ## 🐛 Debug & Monitoring
