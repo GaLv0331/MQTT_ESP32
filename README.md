@@ -111,8 +111,8 @@ ip a
 
 Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address (broker).
 Common Brokers: `"broker.hivemq.com";` `"test.mosquitto.org";`
-> [Link To Main File](mqtt_esp32_basic.ino)
-> [Link To Config File](config.h)
+> [Link To Main File](code/mqqt_esp32_basic.ino)
+>  | [Link To Config File](code/config.h)
 
 ```
 Update Config.h file:
