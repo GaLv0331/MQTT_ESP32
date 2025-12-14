@@ -38,7 +38,7 @@ sudo apt install mosquitto mosquitto-clients
 ```
 
 Verify the installation by checking the version:
-
+[systemctlCommand](images/mosquittoCommand.png)
 ```bash
 sudo systemctl status mosquitto
 ```
@@ -62,7 +62,7 @@ sudo systemctl status mosquitto
 ```
 
 ### Step 3: Configure Mosquitto for Network Access
-
+[configFileChanges](images/confgiFile.png)
 Edit the configuration file to allow network connections:
 
 ```bash
@@ -83,7 +83,7 @@ sudo systemctl restart mosquitto
 ```
 
 ### Step 4: Test Broker Locally
-
+[configFileChanges](images/localTestMQTT.png)
 Open three separate terminal windows on your Ubuntu PC:
 
 1. **mosquitto MQTT Broker Terminal:** Check for verbose logs and flow of events
@@ -92,17 +92,17 @@ Open three separate terminal windows on your Ubuntu PC:
     ```
 2.  **Subscriber Terminal:** Listen for messages on `test/topic`:
     ```bash
-    mosquitto_sub -h localhost(usually <127.0.0.1>) -t test/topic
+    mosquitto_sub -h localhost -t test/topic
     ```
 3.  **Publisher Terminal:** Send a test message:
     ```bash
-    mosquitto_pub -h localhost(usually <127.0.0.1>) -t test/topic -m "Hello MQTT"
+    mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
     ```
 
 If the message "Hello MQTT" appears in the subscriber terminal, the broker is working correctly.
 
 ### Step 5: Find Ubuntu PC IP Address
-
+[configFileChanges](images/ip_a_settings.png)
 Find the local IP address of your Ubuntu PC, which the ESP32 will use as the MQTT broker address:
 
 ```bash
