@@ -103,7 +103,7 @@ Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`,
 
 Common Brokers: `"broker.hivemq.com";` `"test.mosquitto.org";`
 ```
-Update:
+Update Config.h file:
        const char *ssid = "YOUR_WIFI_SSID";
        const char *password = "YOUR_WIFI_PASSWORD";
        const char *MQTT_BROKER = "broker.hivemq.com";
