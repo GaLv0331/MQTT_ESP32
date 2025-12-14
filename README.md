@@ -238,7 +238,7 @@ Compile and upload the code to your ESP32.
 On the Ubuntu PC, open a terminal and subscribe to the topic the ESP32 is publishing to:
 
 ```bash
-mosquitto_sub -h test.mosquitto.org -t cdac/desd/telemetry
+mosquitto_sub -h test.mosquitto.org -t "cdac/desd/telemetry"
 ```
 
 You should see the message being received:
@@ -246,6 +246,17 @@ You should see the message being received:
 ```
 {"Temperature":45,"Humidity":82}
 ```
+
+Open another terminal and publish to the topic the ESP32 is subscribing to:
+```bash
+mosquitto_pub -h test.mosquitto.org -t "cdac/desd/led/control" -m 1
+```
+
+You should see the message being received on ESP32:
+```
+Message arrived [cdac/desd/led/control]: 1
+```
+and the On-Board LED should turn ON
 
 ## 🐛 Debug & Monitoring
 
