@@ -97,9 +97,17 @@ Open three separate terminal windows on your Ubuntu PC:
 
 If the message "Hello MQTT" appears in the subscriber terminal, the broker is working correctly.
 
+### Step 5: Find Ubuntu PC IP Address
 
+Find the local IP address of your Ubuntu PC, which the ESP32 will use as the MQTT broker address:
 
-### Step 5: ESP32 MQTT Publisher Code
+```bash
+ip a
+```
+
+> **Example:** Look for the IP address under the `inet` field (e.g., `inet 192.168.1.10`). This IP will be used as the MQTT broker address in the ESP32 code.
+
+### Step 6: ESP32 MQTT Publisher Code
 
 Use the following base code, replacing the placeholder values (`YOUR_WIFI_SSID`, `YOUR_WIFI_PASSWORD`, and `192.168.1.10`) with your actual Wi-Fi credentials and the Ubuntu PC's IP address (broker).
 
@@ -108,17 +116,17 @@ Common Brokers: `"broker.hivemq.com";` `"test.mosquitto.org";`
 Update Config.h file:
        const char *ssid = "YOUR_WIFI_SSID";
        const char *password = "YOUR_WIFI_PASSWORD";
-       const char *MQTT_BROKER = "broker.hivemq.com";
+       const char *MQTT_BROKER = "192.168.1.10";
        const char *MQTT_CLIENT_ID = "nodeESP32";
 ```
-### Step 6: Verify ESP32 → Ubuntu Communication
+### Step 7: Verify ESP32 → Ubuntu Communication
 
 Compile and upload the code to your ESP32.
 
 On the Ubuntu PC, open a terminal and subscribe to the topic the ESP32 is publishing to:
 
 ```bash
-mosquitto_sub -h test.mosquitto.org -t "cdac/desd/telemetry"
+mosquitto_sub -h 192.168.1.10 -t "cdac/desd/telemetry"
 ```
 
 You should see the message being received:
@@ -129,7 +137,7 @@ You should see the message being received:
 
 Open another terminal and publish to the topic the ESP32 is subscribing to:
 ```bash
-mosquitto_pub -h test.mosquitto.org -t "cdac/desd/led/control" -m 1
+mosquitto_pub -h 192.168.1.10 -t "cdac/desd/led/control" -m 1
 ```
 
 You should see the message being received on ESP32 and the On-Board LED should turn ON:
