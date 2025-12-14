@@ -143,6 +143,7 @@ Message arrived [cdac/desd/led/control]: 1
 | **Connection refused** | Broker not listening | Check the Mosquitto configuration for `listener 1883` |
 | **No messages received** | Topic mismatch | Topics must match exactly (e.g., `esp32/data`) |
 | **Frequent disconnects** | Weak Wi-Fi | Improve the Wi-Fi signal or increase the connection delay |
+| **mosquitto not listening** | PORT already occupied | check which application is blocking PORT using `sudo lsof -i:1883` then kill the process blocking port using `sudo kill -9 <PID>` |
 
 ### Mosquitto Logs
 
