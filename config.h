@@ -3,14 +3,13 @@
 
 #define LED_PIN   2
 
-const char *ssid = "RohitBhoge";
-const char *password = "123456789";
+const char *ssid = "YOUR_WIFI_SSID";
+const char *password = "YOUR_WIFI_PASSWORD";
 
-//const char *MQTT_BROKER = "13.233.232.181";
 const char *MQTT_BROKER = "broker.hivemq.com";
-//const char *MQTT_BROKER = "test.mosquitto.org";
+
 const int MQTT_PORT = 1883;
-const char *MQTT_CLIENT_ID = "rohitBhoge";
+const char *MQTT_CLIENT_ID = "nodeESP32";
 
 const char *MQTT_USERNAME = "desd";
 const char *MQTT_PASSWORD = "desd123";
